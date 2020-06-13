@@ -44,4 +44,22 @@ module.exports = (app) => {
     .put(app.api.enrollment.save)
     .delete(app.api.enrollment.remove)
     .get(app.api.enrollment.get);
+
+  app
+    .route("/modules")
+    .all(app.config.passport.authenticate())
+    .post(app.api.modules.save)
+    .get(app.api.modules.get);
+
+  app
+    .route("/modules/:id")
+    .all(app.config.passport.authenticate())
+    .put(app.api.modules.save)
+    .delete(app.api.modules.remove)
+    .get(app.api.modules.get);
+
+  app
+    .route("/modules/:idCourse/course")
+    .all(app.config.passport.authenticate())
+    .get(app.api.modules.getModulesCourse);
 };
