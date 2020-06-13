@@ -31,4 +31,17 @@ module.exports = (app) => {
     .put(app.api.courses.save)
     .delete(app.api.courses.remove)
     .get(app.api.courses.get);
+
+  app
+    .route("/enrollments")
+    .all(app.config.passport.authenticate())
+    .post(app.api.enrollment.save)
+    .get(app.api.enrollment.get);
+
+  app
+    .route("/enrollments/:id")
+    .all(app.config.passport.authenticate())
+    .put(app.api.enrollment.save)
+    .delete(app.api.enrollment.remove)
+    .get(app.api.enrollment.get);
 };
