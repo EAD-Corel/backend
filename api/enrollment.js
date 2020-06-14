@@ -66,5 +66,17 @@ module.exports = (app) => {
     }
   };
 
-  return { save, remove, get };
+  const getMyCourses = (req, res) => {
+    const enrollments = { ...req.body };
+    if (req.params.myCourses) enrollments.myCourses = req.params.myCourses;
+
+    app
+      .db("enrollment")
+      .select("id", "student", "course")
+      .where({ student: enrollments.myCourses })
+      .then((enrollments) => res.json(enrollments))
+      .catch((err) => res.status(500).send(err));
+  };
+
+  return { save, remove, get, getMyCourses };
 };

@@ -46,6 +46,11 @@ module.exports = (app) => {
     .get(app.api.enrollment.get);
 
   app
+    .route("/enrollments/:myCourses/myCourses")
+    .all(app.config.passport.authenticate())
+    .get(app.api.enrollment.getMyCourses);
+
+  app
     .route("/modules")
     .all(app.config.passport.authenticate())
     .post(app.api.modules.save)
