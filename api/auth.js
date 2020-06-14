@@ -1,19 +1,20 @@
-const { authSecret } = require('../.env');
-const jwt = require('jwt-simple');
-const bcrypt = require('bcrypt');
+const { authSecret } = require("../.env");
+const jwt = require("jwt-simple");
+const bcrypt = require("bcrypt");
 
 module.exports = (app) => {
   const session = async (req, res) => {
     if (!req.body.email || !req.body.password) {
-      return res.status(400).send('Informe usuário e senha');
+      return res.status(400).send("Informe usuário e senha");
     }
 
-    const user = await app.db('users').where({ email: req.body.email }).first();
+    const user = await app.db("users").where({ email: req.body.email }).first();
+    const enrollments = await app.db("enrollment").where({ student: user.id });
 
-    if (!user) return res.status(400).send('Usuário não encontrado');
+    if (!user) return res.status(400).send("Usuário não encontrado");
 
     const isMatch = bcrypt.compareSync(req.body.password, user.password);
-    if (!isMatch) return res.status(401).send('Email e/ou senha inválidos!');
+    if (!isMatch) return res.status(401).send("Email e/ou senha inválidos!");
 
     const now = Math.floor(Date.now() / 1000);
 
@@ -23,11 +24,12 @@ module.exports = (app) => {
       email: user.email,
       iat: now,
       exp: now + 60 * 60 * 24 * 2,
+      enrollments: enrollments,
     };
 
     res.json({
       ...payload,
-      token: jwt.encode(payload, authSecret)
+      token: jwt.encode(payload, authSecret),
     });
   };
 
@@ -48,4 +50,4 @@ module.exports = (app) => {
   };
 
   return { session, validateToken };
-}
+};

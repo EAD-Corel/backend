@@ -64,11 +64,17 @@ module.exports = (app) => {
       .catch((err) => res.status(500).send(err));
   };
 
-  const get = (req, res) => {
+  const get = async (req, res) => {
     const user = { ...req.params };
 
     if (user.userId) {
-      app
+      const enrollments = await app
+        .db("enrollment")
+        .select("id", "student", "course")
+        .where({ student: req.params.userId })
+        .then((enrollments) => enrollments);
+
+      const user = await app
         .db("users")
         .select(
           "id",
@@ -80,8 +86,14 @@ module.exports = (app) => {
           "admin"
         )
         .where({ id: req.params.userId })
-        .then((user) => res.json(user))
-        .catch((err) => res.status(500).send(err));
+        .then((user) => user);
+
+      const info = {
+        user,
+        enrollments,
+      };
+
+      res.status(200).send(info);
     } else {
       app
         .db("users")
