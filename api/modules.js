@@ -72,14 +72,30 @@ module.exports = (app) => {
   };
 
   const getModulesCourse = (req, res) => {
+    const getClasses = async (modules) => {
+      const getClasses = await app.db("classes").orderBy("id", "asc");
+
+      const newArray = modules.map((data) => {
+        const classes = getClasses.filter(
+          (element) => element.module === data.id
+        );
+        return { ...data, classes };
+      });
+
+      const teste = newArray;
+
+      res.status(200).send(teste);
+    };
+
     const modules = { ...req.body };
 
     if (req.params.idCourse) modules.id = req.params.idCourse;
     app
       .db("modules")
       .select("id", "name", "description", "idCourse")
+      .orderBy("id", "asc")
       .where({ idCourse: modules.id })
-      .then((modules) => res.json(modules))
+      .then((modules) => getClasses(modules))
       .catch((err) => res.status(500).send(err));
   };
 

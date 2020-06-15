@@ -1,3 +1,5 @@
+const multer = require("multer");
+
 module.exports = (app) => {
   app.post("/sessions", app.api.auth.session);
   app.post("/validateToken", app.api.auth.validateToken);
@@ -67,4 +69,47 @@ module.exports = (app) => {
     .route("/modules/:idCourse/course")
     .all(app.config.passport.authenticate())
     .get(app.api.modules.getModulesCourse);
+
+  app
+    .route("/classes")
+    .all(app.config.passport.authenticate())
+    .post(app.api.classes.save)
+    .get(app.api.classes.get);
+
+  app
+    .route("/classes/:id")
+    .all(app.config.passport.authenticate())
+    .put(app.api.classes.save)
+    .delete(app.api.classes.remove)
+    .get(app.api.classes.get);
+
+  app
+    .route("/classes/:module/module")
+    .all(app.config.passport.authenticate())
+    .get(app.api.classes.getClassesModule);
+
+  app
+    .route("/classes/upload")
+    .all(app.config.passport.authenticate())
+    .post(app.api.classes.uploadVideo);
+
+  app.route("/video/:video").get(app.api.classes.getVideo);
+
+  app
+    .route("/warnings")
+    .all(app.config.passport.authenticate())
+    .post(app.api.warnings.save)
+    .get(app.api.warnings.get);
+
+  app
+    .route("/warnings/:id")
+    .all(app.config.passport.authenticate())
+    .put(app.api.warnings.save)
+    .delete(app.api.warnings.remove)
+    .get(app.api.warnings.get);
+
+  app
+    .route("/warnings/:course/course")
+    .all(app.config.passport.authenticate())
+    .get(app.api.warnings.getWarningCourse);
 };
