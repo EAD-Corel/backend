@@ -23,6 +23,8 @@ module.exports = (app) => {
       name: user.name,
       email: user.email,
       admin: user.admin,
+      telefone: user.telefone,
+
       iat: now,
       exp: now + 60 * 60 * 24 * 2,
       enrollments: enrollments,

@@ -56,6 +56,13 @@ module.exports = (app) => {
 
     if (req.params.id) user.id = req.params.id;
 
+    try {
+      existsOrError(user.name, "Nome não informado");
+      existsOrError(user.email, "E-mail não informado");
+    } catch (msg) {
+      return res.status(400).send(msg);
+    }
+
     app
       .db("users")
       .update(user)
@@ -130,5 +137,29 @@ module.exports = (app) => {
     }
   };
 
-  return { save, get, remove, update };
+  const alterPassword = async (req, res) => {
+    const user = { ...req.body };
+
+    if (req.params.id) user.id = req.params.id;
+
+    try {
+      existsOrError(user.password, "Senha não informada");
+      existsOrError(user.confirmPassword, "Confirmação de senha não informada");
+      equalsOrError(user.password, user.confirmPassword, "Senhas não conferem");
+    } catch (msg) {
+      return res.status(400).send(msg);
+    }
+
+    user.password = encryptPassword(user.password);
+    delete user.confirmPassword;
+
+    app
+      .db("users")
+      .update(user)
+      .where({ id: user.id })
+      .then((_) => res.status(204).send("Usuário atualizado com sucesso"))
+      .catch((err) => res.status(500).send(err));
+  };
+
+  return { save, get, remove, update, alterPassword };
 };

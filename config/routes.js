@@ -22,6 +22,11 @@ module.exports = (app) => {
     .delete(app.api.users.remove);
 
   app
+    .route("/user/:id/changePassword")
+    .all(app.config.passport.authenticate())
+    .put(app.api.users.alterPassword);
+
+  app
     .route("/courses")
     .all(app.config.passport.authenticate())
     .post(app.api.courses.save)
@@ -112,4 +117,9 @@ module.exports = (app) => {
     .route("/warnings/:course/course")
     .all(app.config.passport.authenticate())
     .get(app.api.warnings.getWarningCourse);
+
+  app
+    .route("/support")
+    .all(app.config.passport.authenticate())
+    .post(app.api.support.sendMail);
 };
