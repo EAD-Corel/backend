@@ -27,6 +27,11 @@ module.exports = (app) => {
     .put(app.api.users.alterPassword);
 
   app
+    .route("/admins")
+    .all(app.config.passport.authenticate())
+    .get(app.api.users.getAdmins);
+
+  app
     .route("/courses")
     .all(app.config.passport.authenticate())
     .post(app.api.courses.save)
@@ -94,7 +99,7 @@ module.exports = (app) => {
     .get(app.api.classes.getClassesModule);
 
   app
-    .route("/classes/upload")
+    .route("/upload")
     .all(app.config.passport.authenticate())
     .post(app.api.classes.uploadVideo);
 

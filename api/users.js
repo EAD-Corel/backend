@@ -104,15 +104,7 @@ module.exports = (app) => {
     } else {
       app
         .db("users")
-        .select(
-          "id",
-          "name",
-          "email",
-          "telefone",
-          "registration_date",
-          "avatar",
-          "admin"
-        )
+        .select("id", "name", "email", "telefone", "registration_date", "admin")
         .then((users) => res.json(users))
         .catch((err) => res.status(500).send(err));
     }
@@ -161,5 +153,14 @@ module.exports = (app) => {
       .catch((err) => res.status(500).send(err));
   };
 
-  return { save, get, remove, update, alterPassword };
+  const getAdmins = async (req, res) => {
+    app
+      .db("users")
+      .select("id", "name", "email", "admin")
+      .where({ admin: !null && !false })
+      .then((users) => res.status(204).send(users))
+      .catch((err) => res.status(500).send(err));
+  };
+
+  return { save, get, remove, update, alterPassword, getAdmins };
 };
