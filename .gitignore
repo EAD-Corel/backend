@@ -2,3 +2,4 @@
 .env
 yarn.lock
 /videos
+api/support.js

@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 
 services:
   pgsql:
@@ -12,12 +12,21 @@ services:
     environment:
       POSTGRES_USER: pguser
       POSTGRES_PASSWORD: pgpassword
+    networks:
+      - eadcorel
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8083:8080
+    container_name: "adminer-ead"
+    networks:
+      - eadcorel
+
+networks:
+  eadcorel:
+    driver: bridge
 
 volumes:
   pg-data:

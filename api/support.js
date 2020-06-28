@@ -2,13 +2,13 @@ const nodemailer = require("nodemailer");
 
 module.exports = (app) => {
   let remetente = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    service: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    host: "",
+    service: "",
+    port: 587,
+    secure: false,
     auth: {
-      user: "rafael13rodrigo@gmail.com",
-      pass: "r4f@31r4f@31r4f@31",
+      user: "",
+      pass: "",
     },
   });
 
@@ -16,10 +16,10 @@ module.exports = (app) => {
     const info = { ...req.body };
 
     let infoSend = {
-      from: "rafael12rodrigo@gmail.com",
-      to: "rafael13rodrigo@gmail.com",
-      subject: "Enviando email",
-      text: "texto",
+      from: "",
+      to: "",
+      subject: info.subject,
+      text: `${info.text} Enviado de: ${info.to}`,
     };
 
     remetente.sendMail(infoSend, function (err) {
