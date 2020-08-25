@@ -3,11 +3,12 @@ const multer = require("multer");
 module.exports = (app) => {
   app.post("/sessions", app.api.auth.session);
   app.post("/validateToken", app.api.auth.validateToken);
+  app.post("/user", app.api.users.save);
 
   app
     .route("/users")
     .all(app.config.passport.authenticate())
-    .post(app.api.users.save)
+    // .post(app.api.users.save)
     .get(app.api.users.get);
 
   app
