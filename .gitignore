@@ -3,3 +3,7 @@
 yarn.lock
 /videos
 api/support.js
+/public/videos/420p/*.mp4
+/public/videos/720p/*.mp4
+/public/videos/1080p/*.mp4
+/public/original/*.mp4

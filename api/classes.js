@@ -4,6 +4,7 @@ const path = require("path");
 
 module.exports = (app) => {
   const { existsOrError } = app.api.validation;
+  const { renderOne, renderTwo, renderThree } = app.api.aConverter;
 
   const save = async (req, res) => {
     const classes = { ...req.body };
@@ -56,6 +57,21 @@ module.exports = (app) => {
     if (req.params.id) classes.id = req.params.id;
 
     if (classes.id) {
+      const getVideos = async (lession) => {
+        const getVideoRender = await app.db("videos").orderBy("id", "asc");
+
+        const newArray = lession.map((data) => {
+          const classes = getVideoRender.filter(
+            (element) => element.hash === data.video
+          );
+          return { ...data, classes };
+        });
+
+        const newValue = newArray;
+
+        res.status(200).send(newValue);
+      };
+
       app
         .db("classes")
         .select(
@@ -69,7 +85,7 @@ module.exports = (app) => {
         )
         .orderBy("id", "asc")
         .where({ id: classes.id })
-        .then((classes) => res.json(classes))
+        .then((classes) => getVideos(classes))
         .catch((err) => res.status(500).send(err));
     } else {
       app
@@ -113,10 +129,10 @@ module.exports = (app) => {
   const uploadVideo = (req, res) => {
     const storage = multer.diskStorage({
       destination: function (req, file, cb) {
-        cb(null, "videos");
+        cb(null, "public/original");
       },
       filename: function (req, file, cb) {
-        cb(null, Date.now() + "-" + file.originalname);
+        cb(null, Date.now() + ".mp4");
       },
     });
 
@@ -129,12 +145,33 @@ module.exports = (app) => {
         return res.status(500).send(err);
       }
 
-      return res.status(200).send(req.file);
+      const newHash = `${Date.now()}${Date.now()}`;
+
+      const newInfo = {
+        hash: newHash,
+        error: false,
+        process: true,
+        sd: null,
+        hd: null,
+        fullHD: null,
+      };
+
+      app
+        .db("videos")
+        .insert(newInfo)
+        .then((_) => res.status(200).send(newInfo))
+        .catch((err) => res.status(500).send(err));
+
+      renderOne(req.file.path, req.file.filename, newInfo.hash);
+      renderTwo(req.file.path, req.file.filename, newInfo.hash);
+      renderThree(req.file.path, req.file.filename, newInfo.hash);
+
+      // return res.status(200).send(req.file);
     });
   };
 
   const getVideo = (req, res) => {
-    const path = `videos/${req.params.video}`;
+    const path = `${req.params.video}`;
     const stat = fs.statSync(path);
     const fileSize = stat.size;
     const range = req.headers.range;

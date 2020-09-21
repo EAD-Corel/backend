@@ -4,9 +4,9 @@ module.exports = {
   client: "postgresql",
   connection: {
     host: "localhost",
-    database: "eadcorel",
-    user: "pguser",
-    password: "pgpassword",
+    database: "corel",
+    user: "rafael",
+    password: "123456",
   },
   pool: {
     min: 2,
