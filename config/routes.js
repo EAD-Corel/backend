@@ -128,4 +128,9 @@ module.exports = (app) => {
     .route("/support")
     .all(app.config.passport.authenticate())
     .post(app.api.support.sendMail);
+
+  app
+    .route("/info/system")
+    .all(app.config.passport.authenticate())
+    .get(app.api.infoServer.getInfosServer);
 };
