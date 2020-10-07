@@ -171,7 +171,7 @@ module.exports = (app) => {
   };
 
   const getVideo = (req, res) => {
-    const path = `${req.params.video}`;
+    const path = `public/videos/${req.params.path}/${req.params.video}`;
     const stat = fs.statSync(path);
     const fileSize = stat.size;
     const range = req.headers.range;

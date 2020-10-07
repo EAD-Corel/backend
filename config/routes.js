@@ -104,7 +104,7 @@ module.exports = (app) => {
     .all(app.config.passport.authenticate())
     .post(app.api.classes.uploadVideo);
 
-  app.route("/video/:video").get(app.api.classes.getVideo);
+  app.route("/public/videos/:path/:video").get(app.api.classes.getVideo);
 
   app
     .route("/warnings")
